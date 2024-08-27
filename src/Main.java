@@ -74,10 +74,11 @@ public class Main {
         //Get the details of youngest male employee in the product development department?
 
         Optional<Employee> youngestMaleEmployeeInProductDevelopmentWrapper = employeeList.stream().filter(e->e.getGender() =="Male" && e.getDepartment() == "Product Development").min(Comparator.comparing(Employee::getAge));
-
-
         System.out.println("\nDetails of youngest male employee in the product development department: " + youngestMaleEmployeeInProductDevelopmentWrapper.get().getId());
 
+        //Who has the most working experience in the organization?
+        System.out.println("\nWho has the most working experience in the organization? ");
+        Optional<Employee> seniorMostEmployeeWrapper = employeeList.stream().sorted(Comparator.comparingInt(Employee::getYearOfJoining)).findFirst();
+        System.out.println("\nWho has the most working experience in the organization? "+ seniorMostEmployeeWrapper.get().getId());
     }
-
 }
