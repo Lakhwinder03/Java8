@@ -80,5 +80,63 @@ public class Main {
         System.out.println("\nWho has the most working experience in the organization? ");
         Optional<Employee> seniorMostEmployeeWrapper = employeeList.stream().sorted(Comparator.comparingInt(Employee::getYearOfJoining)).findFirst();
         System.out.println("\nWho has the most working experience in the organization? "+ seniorMostEmployeeWrapper.get().getId());
+
+        System.out.println("\nWhat is the average salary of male and female employees?");
+        Map<String,Double> avgSalaryOfMaleAndFemaleEmployees = employeeList.stream().collect(Collectors.groupingBy(Employee::getGender, Collectors.averagingDouble(Employee::getSalary)));
+        System.out.println(avgSalaryOfMaleAndFemaleEmployees);
+
+        // List down the names of all employees in each department?
+        Map<String, List<Employee>> employeeListByDepartment=
+                employeeList.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+
+        Set<Map.Entry<String, List<Employee>>> entrySet = employeeListByDepartment.entrySet();
+
+        for (Map.Entry<String, List<Employee>> entry : entrySet)
+        {
+            System.out.println("--------------------------------------");
+            System.out.println("Employees In "+entry.getKey() + " : ");
+            System.out.println("--------------------------------------");
+            List<Employee> list = entry.getValue();
+            for (Employee e : list)
+            {
+                System.out.println(e.getName());
+            }
+        }
+
+        // What is the average salary and total salary of the whole organization?
+        System.out.println("What is the average salary and total salary of the whole organization?");
+        DoubleSummaryStatistics employeeSalaryStatistics=
+                employeeList.stream().collect(Collectors.summarizingDouble(Employee::getSalary));
+        System.out.println("Average Salary = "+employeeSalaryStatistics.getAverage());
+        System.out.println("Total Salary = "+employeeSalaryStatistics.getSum());
+
+        //Separate the employees who are younger or equal to 25 years from those employees who are older than 25 years.
+
+        Map<Boolean, List<Employee>> partitionEmployeesByAge=
+                employeeList.stream().collect(Collectors.partitioningBy(e -> e.getAge() > 25));
+        Set<Map.Entry<Boolean, List<Employee>>> entrySet1 = partitionEmployeesByAge.entrySet();
+        for (Map.Entry<Boolean, List<Employee>> entry : entrySet1)
+        {
+            System.out.println("----------------------------");
+            if (entry.getKey())
+            {
+                System.out.println("Employees older than 25 years :");
+            } else {
+                System.out.println("Employees younger than or equal to 25 years :");
+            }
+            System.out.println("----------------------------");
+            List<Employee> list = entry.getValue();
+            for (Employee e : list)
+            {
+                System.out.println(e.getName());
+            }
+        }
+
+        // Who is the oldest employee in the organization? What is his age and which department he belongs to?
+        Optional<Employee> oldestEmployeeWrapper = employeeList.stream().max(Comparator.comparingInt(Employee::getAge));
+        Employee oldestEmployee = oldestEmployeeWrapper.get();
+        System.out.println("Name : "+oldestEmployee.getName());
+        System.out.println("Age : "+oldestEmployee.getAge());
+        System.out.println("Department : "+oldestEmployee.getDepartment());
     }
 }
